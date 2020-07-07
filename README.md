@@ -6,3 +6,5 @@ Relies on https://github.com/JoMingyu/google-play-scraper:
 ```
 pip install google-play-scraper
 ```
+
+List with country codes modified from https://github.com/danieliu/play-scraper.
