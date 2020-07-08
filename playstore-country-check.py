@@ -1,4 +1,4 @@
-# playstore-country-check 0.1 by treysis / https://github.com/treysis
+# playstore-country-check 0.11 by treysis / https://github.com/treysis
 # License: LGPL 2.1
 #
 # Checks the availability of apps in local variants of Google's PlayStore.
@@ -16,10 +16,12 @@ except ImportError as error:
     exit()
 
 from sys import stdout
+from sys import argv
 
 
 
 # Initialize country codes and names
+"""
 GL_COUNTRY_CODES = {
     "ad": "Andorra",
     "ae": "United Arab Emirates",
@@ -266,6 +268,455 @@ GL_COUNTRY_CODES = {
     "zw": "Zimbabwe",
 }
 
+"""
+
+# Mildly shortened list
+"""
+GL_COUNTRY_CODES = {
+    "ad": "Andorra",
+    "ae": "United Arab Emirates",
+    "af": "Afghanistan",
+    "al": "Albania",
+    "am": "Armenia",
+    "ao": "Angola",
+    "ar": "Argentina",
+    "at": "Austria",
+    "au": "Australia",
+    "az": "Azerbaijan",
+    "ba": "Bosnia and Herzegovina",
+    "bd": "Bangladesh",
+    "be": "Belgium",
+    "bf": "Burkina Faso",
+    "bg": "Bulgaria",
+    "bh": "Bahrain",
+    "bi": "Burundi",
+    "br": "Brazil",
+    "bw": "Botswana",
+    "by": "Belarus",
+    "ca": "Canada",
+    "cd": "Congo (DRC)",
+    "cf": "Central African Republic",
+    "cg": "Congo (Republic)",
+    "ch": "Switzerland",
+    "ci": "Ivory Coast (Côte d'Ivoire)",
+    "cl": "Chile",
+    "cm": "Cameroon",
+    "cn": "China",
+    "co": "Colombia",
+    "cr": "Costa Rica",
+    "cu": "Cuba",
+    "cy": "Cyprus",
+    "cz": "Czech Republic",
+    "de": "Germany",
+    "dk": "Denmark",
+    "do": "Dominican Republic",
+    "dz": "Algeria",
+    "ec": "Ecuador",
+    "ee": "Estonia",
+    "eg": "Egypt",
+    "er": "Eritrea",
+    "es": "Spain",
+    "fi": "Finland",
+    "fo": "Faroe Islands",
+    "fr": "France",
+    "gb": "United Kingdom",
+    "ge": "Georgia",
+    "gg": "Guernsey",
+    "gh": "Ghana",
+    "gi": "Gibraltar",
+    "gl": "Greenland",
+    "gn": "Guinea",
+    "gr": "Greece",
+    "hk": "Hong Kong",
+    "hn": "Honduras",
+    "hr": "Croatia",
+    "hu": "Hungary",
+    "id": "Indonesia",
+    "ie": "Ireland",
+    "il": "Israel",
+    "im": "Isle of Man",
+    "in": "India",
+    "iq": "Iraq",
+    "ir": "Iran",
+    "is": "Iceland",
+    "it": "Italy",
+    "je": "Jersey",
+    "jm": "Jamaica",
+    "jo": "Jordan",
+    "jp": "Japan",
+    "ke": "Kenya",
+    "kg": "Kyrgyzstan",
+    "kh": "Cambodia",
+    "kr": "South Korea",
+    "kw": "Kuwait",
+    "kz": "Kazakhstan",
+    "lb": "Lebanon",
+    "li": "Liechtenstein",
+    "lk": "Sri Lanka",
+    "lr": "Liberia",
+    "lt": "Lithuania",
+    "lu": "Luxembourg",
+    "lv": "Latvia",
+    "ly": "Libya",
+    "ma": "Morocco",
+    "mc": "Monaco",
+    "md": "Moldova",
+    "me": "Montenegro",
+    "mg": "Madagascar",
+    "mk": "North Macedonia",
+    "ml": "Mali",
+    "mn": "Mongolia",
+    "mr": "Mauritania",
+    "mt": "Malta",
+    "mu": "Mauritius",
+    "mx": "Mexico",
+    "my": "Malaysia",
+    "mz": "Mozambique",
+    "na": "Namibia",
+    "ne": "Niger",
+    "ng": "Nigeria",
+    "nl": "Netherlands",
+    "no": "Norway",
+    "np": "Nepal",
+    "nz": "New Zealand",
+    "om": "Oman",
+    "pa": "Panama",
+    "pe": "Peru",
+    "ph": "Philippines",
+    "pk": "Pakistan",
+    "pl": "Poland",
+    "pr": "Puerto Rico",
+    "pt": "Portugal",
+    "py": "Paraguay",
+    "qa": "Qatar",
+    "ro": "Romania",
+    "rs": "Serbia",
+    "ru": "Russia",
+    "sa": "Saudi Arabia",
+    "sd": "Sudan",
+    "se": "Sweden",
+    "sg": "Singapore",
+    "si": "Slovenia",
+    "sk": "Slovakia",
+    "sm": "San Marino",
+    "sn": "Senegal",
+    "td": "Chad",
+    "tg": "Togo",
+    "th": "Thailand",
+    "tj": "Tajikistan",
+    "tm": "Turkmenistan",
+    "tn": "Tunisia",
+    "tr": "Turkey",
+    "tw": "Taiwan",
+    "tz": "Tanzania",
+    "ua": "Ukraine",
+    "us": "United States",
+    "uy": "Uruguay",
+    "uz": "Uzbekistan",
+    "va": "Vatican City",
+    "ve": "Venezuela",
+    "vn": "Vietnam",
+    "xk": "Kosovo",
+    "za": "South Africa",
+}
+"""
+
+# Strongly shortened list, focus on Europe
+"""
+GL_COUNTRY_CODES = {
+    "ad": "Andorra",
+    "ae": "United Arab Emirates",
+    "af": "Afghanistan",
+    "al": "Albania",
+    "am": "Armenia",
+    "ao": "Angola",
+    "ar": "Argentina",
+    "at": "Austria",
+    "au": "Australia",
+    "az": "Azerbaijan",
+    "ba": "Bosnia and Herzegovina",
+    "bd": "Bangladesh",
+    "be": "Belgium",
+    "bg": "Bulgaria",
+    "br": "Brazil",
+    "by": "Belarus",
+    "ca": "Canada",
+    "cd": "Congo (DRC)",
+    "cg": "Congo (Republic)",
+    "ch": "Switzerland",
+    "cl": "Chile",
+    "cm": "Cameroon",
+    "cn": "China",
+    "co": "Colombia",
+    "cu": "Cuba",
+    "cy": "Cyprus",
+    "cz": "Czech Republic",
+    "de": "Germany",
+    "dk": "Denmark",
+    "do": "Dominican Republic",
+    "dz": "Algeria",
+    "ee": "Estonia",
+    "eg": "Egypt",
+    "er": "Eritrea",
+    "es": "Spain",
+    "fi": "Finland",
+    "fo": "Faroe Islands",
+    "fr": "France",
+    "gb": "United Kingdom",
+    "ge": "Georgia",
+    "gg": "Guernsey",
+    "gh": "Ghana",
+    "gi": "Gibraltar",
+    "gl": "Greenland",
+    "gr": "Greece",
+    "hk": "Hong Kong",
+    "hn": "Honduras",
+    "hr": "Croatia",
+    "hu": "Hungary",
+    "id": "Indonesia",
+    "ie": "Ireland",
+    "il": "Israel",
+    "im": "Isle of Man",
+    "in": "India",
+    "iq": "Iraq",
+    "ir": "Iran",
+    "is": "Iceland",
+    "it": "Italy",
+    "je": "Jersey",
+    "jo": "Jordan",
+    "jp": "Japan",
+    "ke": "Kenya",
+    "kr": "South Korea",
+    "kz": "Kazakhstan",
+    "lb": "Lebanon",
+    "li": "Liechtenstein",
+    "lk": "Sri Lanka",
+    "lt": "Lithuania",
+    "lu": "Luxembourg",
+    "lv": "Latvia",
+    "ly": "Libya",
+    "ma": "Morocco",
+    "mc": "Monaco",
+    "md": "Moldova",
+    "me": "Montenegro",
+    "mk": "North Macedonia",
+    "mn": "Mongolia",
+    "mt": "Malta",
+    "mu": "Mauritius",
+    "mx": "Mexico",
+    "mz": "Mozambique",
+    "na": "Namibia",
+    "ng": "Nigeria",
+    "nl": "Netherlands",
+    "no": "Norway",
+    "np": "Nepal",
+    "nz": "New Zealand",
+    "om": "Oman",
+    "pe": "Peru",
+    "ph": "Philippines",
+    "pk": "Pakistan",
+    "pl": "Poland",
+    "pr": "Puerto Rico",
+    "pt": "Portugal",
+    "py": "Paraguay",
+    "qa": "Qatar",
+    "ro": "Romania",
+    "rs": "Serbia",
+    "ru": "Russia",
+    "sa": "Saudi Arabia",
+    "sd": "Sudan",
+    "se": "Sweden",
+    "sg": "Singapore",
+    "si": "Slovenia",
+    "sk": "Slovakia",
+    "sm": "San Marino",
+    "tg": "Togo",
+    "th": "Thailand",
+    "tn": "Tunisia",
+    "tr": "Turkey",
+    "tw": "Taiwan",
+    "tz": "Tanzania",
+    "ua": "Ukraine",
+    "us": "United States",
+    "uy": "Uruguay",
+    "uz": "Uzbekistan",
+    "va": "Vatican City",
+    "ve": "Venezuela",
+    "vn": "Vietnam",
+    "xk": "Kosovo",
+    "za": "South Africa",
+}
+"""
+
+# Some bigger countries only, focus on Europe
+"""
+GL_COUNTRY_CODES = {
+    "ad": "Andorra",
+    "ae": "United Arab Emirates",
+    "al": "Albania",
+    "am": "Armenia",
+    "ar": "Argentina",
+    "at": "Austria",
+    "au": "Australia",
+    "ba": "Bosnia and Herzegovina",
+    "bd": "Bangladesh",
+    "be": "Belgium",
+    "bg": "Bulgaria",
+    "br": "Brazil",
+    "by": "Belarus",
+    "ca": "Canada",
+    "ch": "Switzerland",
+    "cm": "Cameroon",
+    "cn": "China",
+    "co": "Colombia",
+    "cu": "Cuba",
+    "cy": "Cyprus",
+    "cz": "Czech Republic",
+    "de": "Germany",
+    "dk": "Denmark",
+    "do": "Dominican Republic",
+    "dz": "Algeria",
+    "ee": "Estonia",
+    "eg": "Egypt",
+    "er": "Eritrea",
+    "es": "Spain",
+    "fi": "Finland",
+    "fo": "Faroe Islands",
+    "fr": "France",
+    "gb": "United Kingdom",
+    "ge": "Georgia",
+    "gg": "Guernsey",
+    "gh": "Ghana",
+    "gi": "Gibraltar",
+    "gl": "Greenland",
+    "gr": "Greece",
+    "hk": "Hong Kong",
+    "hr": "Croatia",
+    "hu": "Hungary",
+    "id": "Indonesia",
+    "ie": "Ireland",
+    "il": "Israel",
+    "im": "Isle of Man",
+    "in": "India",
+    "iq": "Iraq",
+    "ir": "Iran",
+    "is": "Iceland",
+    "it": "Italy",
+    "je": "Jersey",
+    "jp": "Japan",
+    "ke": "Kenya",
+    "kr": "South Korea",
+    "kz": "Kazakhstan",
+    "lb": "Lebanon",
+    "li": "Liechtenstein",
+    "lk": "Sri Lanka",
+    "lt": "Lithuania",
+    "lu": "Luxembourg",
+    "lv": "Latvia",
+    "ly": "Libya",
+    "ma": "Morocco",
+    "mc": "Monaco",
+    "md": "Moldova",
+    "me": "Montenegro",
+    "mk": "North Macedonia",
+    "mt": "Malta",
+    "mx": "Mexico",
+    "na": "Namibia",
+    "ng": "Nigeria",
+    "nl": "Netherlands",
+    "no": "Norway",
+    "nz": "New Zealand",
+    "ph": "Philippines",
+    "pk": "Pakistan",
+    "pl": "Poland",
+    "pr": "Puerto Rico",
+    "pt": "Portugal",
+    "py": "Paraguay",
+    "qa": "Qatar",
+    "ro": "Romania",
+    "rs": "Serbia",
+    "ru": "Russia",
+    "sa": "Saudi Arabia",
+    "se": "Sweden",
+    "sg": "Singapore",
+    "si": "Slovenia",
+    "sk": "Slovakia",
+    "sm": "San Marino",
+    "th": "Thailand",
+    "tr": "Turkey",
+    "tw": "Taiwan",
+    "ua": "Ukraine",
+    "us": "United States",
+    "uy": "Uruguay",
+    "va": "Vatican City",
+    "ve": "Venezuela",
+    "xk": "Kosovo",
+    "za": "South Africa",
+}
+"""
+
+
+# Europe only
+#"""
+GL_COUNTRY_CODES = {
+    "ad": "Andorra",
+    "al": "Albania",
+    "at": "Austria",
+    "ba": "Bosnia and Herzegovina",
+    "be": "Belgium",
+    "bg": "Bulgaria",
+    "by": "Belarus",
+    "ch": "Switzerland",
+    "cn": "China",
+    "cy": "Cyprus",
+    "cz": "Czech Republic",
+    "de": "Germany",
+    "dk": "Denmark",
+    "ee": "Estonia",
+    "es": "Spain",
+    "fi": "Finland",
+    "fo": "Faroe Islands",
+    "fr": "France",
+    "gb": "United Kingdom",
+    "gg": "Guernsey",
+    "gi": "Gibraltar",
+    "gl": "Greenland",
+    "gr": "Greece",
+    "hr": "Croatia",
+    "hu": "Hungary",
+    "ie": "Ireland",
+    "il": "Israel",
+    "im": "Isle of Man",
+    "is": "Iceland",
+    "it": "Italy",
+    "je": "Jersey",
+    "li": "Liechtenstein",
+    "lt": "Lithuania",
+    "lu": "Luxembourg",
+    "lv": "Latvia",
+    "mc": "Monaco",
+    "md": "Moldova",
+    "me": "Montenegro",
+    "mk": "North Macedonia",
+    "mt": "Malta",
+    "nl": "Netherlands",
+    "no": "Norway",
+    "pl": "Poland",
+    "pt": "Portugal",
+    "ro": "Romania",
+    "rs": "Serbia",
+    "ru": "Russia",
+    "se": "Sweden",
+    "si": "Slovenia",
+    "sk": "Slovakia",
+    "sm": "San Marino",
+    "tr": "Turkey",
+    "ua": "Ukraine",
+    "va": "Vatican City",
+    "xk": "Kosovo",
+}
+#"""
+
 # Short country list for faster testing
 """
 GL_COUNTRY_CODES = {
@@ -273,41 +724,51 @@ GL_COUNTRY_CODES = {
     "at": "Austria",
     "ch": "Switzerland",
     "gb": "United Kingdom",
-    "us": "United States of America",
+    "us": "United States",
     "zw": "Zimbabwe",
 }
 """
 
-print("--\nplaystore-country-check 0.1:\nChecking the enabled PlayStore countries for Germany's", \
-        "Corona-Warn-App\n(package name: de.rki.coronawarnapp).")
-print("Sourcecode @ https://github.com/treysis/playstore-country-check\n\n")
+print("--\nplaystore-country-check 0.11:\nChecking the enabled PlayStore countries for a specified", \
+        "app\n(e.g. use package name: de.rki.coronawarnapp).")
+print("Sourcecode @ https://github.com/treysis/playstore-country-check\n")
+print("Usage: python playstore-country-check.py <playstore.package.name>\n\n")
 
 # Initialize variables.
 cwaa = list()
 cwana = list()
 n_countries = len(GL_COUNTRY_CODES)
-delete = "\b" * 15
+delete = "\b" * 35
 
-# Start checking
-print("Checking countries:")
+# Check for app name from cmdline
+if len(argv)<2:
+  appname = "de.rki.coronawarnapp"
+  print("No app name specified. Defaulting to \'" + appname + "\'\n")
+else:
+  appname = argv[1]
+
+# Start checking localized PlayStores
+print("Checking countries for \'" + appname + "\':")
 i=0
 for (k,v) in GL_COUNTRY_CODES.items():
   # Progress indicator
-  print("{0}{0}{1:{2}}".format(delete, i+1, 3), end=" of " + str(n_countries) + "... (current: " + k + ")")
+  print("{0}{0}{1:{2}}".format(delete, i+1, 3), end=" of " + str(n_countries) + "... (current: " + k + ", total available: " + str(len(cwaa)) + ")")
   i=i+1
   stdout.flush()
   # Request app data from google-play-scraper with country code. If available, "released" will
   # contain some release date. If not available in the selected country, this value is empty.
-  if app('de.rki.coronawarnapp', country=k)['released'] is not None:
+  # Addition 08.07.2020: this doesn't seem to always be true. E.g. SwissCovid and Andorra.
+  if app(appname, country=k)['released'] is not None:
     cwaa.append(v)
   else:
     cwana.append(v)
-print("...done!\n")
+# Some ugly output formatting...
+print(delete + "(total available: " + str(len(cwaa)) + ") ...done!                   \n")
 
 # Prepare and format output
 cwaa.sort()
 cwana.sort()
-print("App available in " + str(len(cwaa)) + " local PlayStores:")
+print("App available in " + str(len(cwaa)) + " tested local PlayStores:")
 print(*cwaa, sep=", ", end=".\n")
 print("\nNot available in:")
 print(*cwana, sep=", ", end=".\n")
