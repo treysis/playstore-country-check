@@ -1,10 +1,11 @@
-# playstore-country-check 0.11
+# playstore-country-check 0.2
 This python script checks all localized versions of Google's PlayStore for the availability of a specific app. Sample code uses the German Corona-Warn-App for COVID-19 Contact Tracing with package name de.rki.coronawarnapp.
 
-Relies on https://github.com/JoMingyu/google-play-scraper:
+Relies on `requests` and `BeautifulSoup4`:
 
 ```
-pip install google-play-scraper
+pip install requests
+pip install beautifulsoup4
 ```
 
 List with country codes modified from https://github.com/danieliu/play-scraper.
@@ -19,9 +20,14 @@ python playstore-country-check.py <app.package.name>
 - lots of error/exception handling
 - make country lists configurable by cmdline switches
 - modularize/classify
-- maybe modify scraping method
+- translation of country names (by scraping from PlayStore!)
+- ~~maybe modify scraping method~~ done!
 
 ## Changelog:
+
+##### 0.2
+
+- changed scraping method (only checking release date was unreliable)
 
 ##### 0.11
 

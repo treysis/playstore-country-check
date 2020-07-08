@@ -1,1 +1,2 @@
-google-play-scraper
+requests
+beautifulsoup4

@@ -1,18 +1,24 @@
-# playstore-country-check 0.11 by treysis / https://github.com/treysis
+# playstore-country-check 0.2 by treysis / https://github.com/treysis
 # License: LGPL 2.1
 #
 # Checks the availability of apps in local variants of Google's PlayStore.
 #
-# Relies on google-play-scraper (https://github.com/JoMingyu/google-play-scraper),
+# Runs on Python 3.8. Relies on 'requests' and 'BeautifulSoup4'
 # install with:
-#     pip install google-play-scraper
+#     pip install requests
+#     pip install beautifulsoup4
 #
 
+try:
+    import requests
+except ImportError as error:
+    print("Error: error while loading 'requests'! Install with 'pip install requests' and try again.")
+    exit()
 
 try:
-    from google_play_scraper import app
+    from bs4 import BeautifulSoup
 except ImportError as error:
-    print("Error: error while loading 'google-play-scraper'! Install with 'pip install google-play-scraper' and try again.")
+    print("Error: error while loading 'BeautifulSoup4'! Install with 'pip install beautifulsoup4' and try again.")
     exit()
 
 from sys import stdout
@@ -729,7 +735,7 @@ GL_COUNTRY_CODES = {
 }
 """
 
-print("--\nplaystore-country-check 0.11:\nChecking the enabled PlayStore countries for a specified", \
+print("--\nplaystore-country-check 0.2:\nChecking the enabled PlayStore countries for a specified", \
         "app\n(e.g. use package name: de.rki.coronawarnapp).")
 print("Sourcecode @ https://github.com/treysis/playstore-country-check\n")
 print("Usage: python playstore-country-check.py <playstore.package.name>\n\n")
@@ -739,6 +745,7 @@ cwaa = list()
 cwana = list()
 n_countries = len(GL_COUNTRY_CODES)
 delete = "\b" * 35
+psurl = "https://play.google.com/store/apps/details?id="
 
 # Check for app name from cmdline
 if len(argv)<2:
@@ -755,10 +762,14 @@ for (k,v) in GL_COUNTRY_CODES.items():
   print("{0}{0}{1:{2}}".format(delete, i+1, 3), end=" of " + str(n_countries) + "... (current: " + k + ", total available: " + str(len(cwaa)) + ")")
   i=i+1
   stdout.flush()
-  # Request app data from google-play-scraper with country code. If available, "released" will
-  # contain some release date. If not available in the selected country, this value is empty.
-  # Addition 08.07.2020: this doesn't seem to always be true. E.g. SwissCovid and Andorra.
-  if app(appname, country=k)['released'] is not None:
+  # Search PlayStore webpage for install button (no matter if free/buy).
+  # This is done by searching all <button> tags, and install button has
+  # class = ['LkLjZd', 'ScJHi', 'HPiPcc', 'IfEcue'] (arbitrary array by
+  # Google? Should be auto-detected in a future release by querying a
+  # known-good app and extract the string from there).
+  url = psurl + appname + "&gl=" + k
+  soup = BeautifulSoup(requests.get(url).text, 'lxml')
+  if soup.find_all(lambda tag: tag.name=='button' and tag.get('class')==['LkLjZd','ScJHi','HPiPcc','IfEcue']):
     cwaa.append(v)
   else:
     cwana.append(v)
