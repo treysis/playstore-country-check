@@ -7,7 +7,7 @@
 # install with:
 #     pip install google-play-scraper
 #
-
+# --- DEPRECATED --- for testing or learning ;)
 
 try:
     from google_play_scraper import app
@@ -17,7 +17,9 @@ except ImportError as error:
 
 from sys import stdout
 from multiprocessing.dummy import Pool
+from itertools import product
 
+# Initialize country codes and names
 GL_CC = {
     "ad": "Andorra",
     "at": "Austria",
@@ -62,16 +64,17 @@ GL_CC = {
 
 cwaa = list()
 cwana = list()
+delete = "\b" * 15
 
 
-def crawl(k):
+def crawl(a, k):
     # Progress indicator
     print("{0}{0}{1:{2}}".format(delete, len(cwaa)+len(cwana), 3), end=" of " + str(len(GL_CC)) + "... (current: " + k + ")")
     stdout.flush()
     #print(k, end = ',')
     # Request app data from google-play-scraper with country code. If available, "released" will
     # contain some release date. If not available in the selected country, this value is empty.
-    if app('de.rki.coronawarnapp', country=k)['released'] is not None:
+    if app(a, country=k)['released'] is not None:
         cwaa.append(GL_CC[k])
         print("{0}{0}{1:{2}}".format(delete, len(cwaa)+len(cwana), 3), end=" of " + str(len(GL_CC)) + "... (current: " + k + ")")
         stdout.flush()
@@ -80,10 +83,10 @@ def crawl(k):
         print("{0}{0}{1:{2}}".format(delete, len(cwaa)+len(cwana), 3), end=" of " + str(len(GL_CC)) + "... (current: " + k + ")")
         stdout.flush()
 
+    return(k)
 
-if __name__ == '__main__':
-    # Initialize country codes and names
 
+def main():
 
     print("--\nplaystore-country-check - testversion:\nChecking the enabled PlayStore countries for Germany's", \
             "Corona-Warn-App\n(package name: de.rki.coronawarnapp).")
@@ -92,7 +95,7 @@ if __name__ == '__main__':
     # Initialize variables.
     #cwaa = list()
     #cwana = list()
-    delete = "\b" * 15
+    #delete = "\b" * 15
     # Number of parallel threads. 10 seems safe to use for rate limiting.
     n_Psize = 10
 
@@ -100,8 +103,10 @@ if __name__ == '__main__':
     print("Checking countries (using " + str(n_Psize) + " parallel threads):")
     #i=0
     pool = Pool(n_Psize)
-    pool.map(crawl, list(GL_CC.keys()))
+    appname = ['de.rki.coronawarnapp']
+    thread_result = pool.starmap(crawl, product(appname, list(GL_CC.keys())))
     print("...done!\n")
+    print(thread_result)
 
     # Prepare and format output
     cwaa.sort()
@@ -112,3 +117,7 @@ if __name__ == '__main__':
     print(*cwana, sep=", ", end=".\n")
     print("\n--- Finished, exiting... ---")
 
+    return
+
+if __name__ == '__main__':
+    main()
