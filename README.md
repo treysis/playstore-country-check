@@ -5,11 +5,12 @@ simultaneous threads (rate limit of Google probably much higher!). Sample
 code uses the German Corona-Warn-App for COVID-19 Contact Tracing with package 
 name de.rki.coronawarnapp.
 
-Relies on `requests` and `BeautifulSoup4`:
+Relies on `requests` and `BeautifulSoup4` with `lxml`:
 
 ```
 pip install requests
 pip install beautifulsoup4
+pip install lxml
 ```
 
 List with country codes modified from https://github.com/danieliu/play-scraper.
@@ -44,6 +45,11 @@ playstore_country_check.check('playstore.package.name', 'gl')
 - ~~maybe modify scraping method~~ done!
 
 ## Changelog:
+
+##### 0.35
+
+- adapt detection to changes from Google, fixes [#2](https://github.com/treysis/playstore-country-check/issues/2)
+- check for `lxml` module which is needed for the scraping method by BeautifulSoup4
 
 ##### 0.3
 

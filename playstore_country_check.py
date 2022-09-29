@@ -1,9 +1,9 @@
-# playstore-country-check 0.3 by treysis / https://github.com/treysis
+# playstore-country-check 0.35 by treysis / https://github.com/treysis
 # License: LGPL 2.1
 #
 # Checks the availability of apps in local variants of Google's PlayStore.
 #
-# Runs on Python 3.8. Relies on 'requests' and 'BeautifulSoup4'
+# Runs on Python 3.8, 3.10. Relies on 'requests' and 'BeautifulSoup4'
 # install with:
 #     pip install requests
 #     pip install beautifulsoup4
@@ -20,6 +20,11 @@ try:
 except ImportError as error:
     print("Error: error while loading 'BeautifulSoup4'! Install with 'pip install beautifulsoup4' and try again.")
     exit()
+
+try:
+    import lxml
+except ImportError as error:
+    print("Error: BeautifulSoup4 needs 'lxml'! Install with 'pip install lxml' and try again.")
 
 from sys import stdout
 from sys import argv
@@ -735,7 +740,7 @@ GL_COUNTRY_CODES = {
 }
 """
 
-print("--\nplaystore-country-check 0.3:\nChecking the enabled PlayStore countries for a specified", \
+print("--\nplaystore-country-check 0.35:\nChecking the enabled PlayStore countries for a specified", \
       "app\n(e.g. use package name: de.rki.coronawarnapp).")
 print("Sourcecode @ https://github.com/treysis/playstore-country-check\n")
 print("Usage: python playstore_country_check.py <playstore.package.name>\n\n")
@@ -764,7 +769,7 @@ def check(appname, gl):
     # known-good app and extract the string from there).
     url = psurl + appname + "&gl=" + gl
     soup = BeautifulSoup(requests.get(url).text, 'lxml')
-    if soup.find_all(lambda tag: tag.name == 'button' and tag.get('class') == ['LkLjZd', 'ScJHi', 'HPiPcc', 'IfEcue']):
+    if soup.find_all(lambda tag: tag.name == 'button' and tag.get('class') == ['VfPpkd-LgbsSe','VfPpkd-LgbsSe-OWXEXe-k8QpJ','VfPpkd-LgbsSe-OWXEXe-dgl2Hf','nCP5yc','AjY5Oe','DuMIQc','LQeN7','MjT6xe','sOCCfd','brKGGd','BhQfub','zwjsl']):
         # Circumvent error when country code is not in the loaded country list when invoked as module
         try:
             cwaa.append(GL_COUNTRY_CODES[gl])
